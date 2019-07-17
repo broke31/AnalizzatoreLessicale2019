@@ -1,1 +1,7 @@
-c2322c a ciao IF > < <> = 4 3.4 0e+32 0e2
+ciao
+<
+>
+33.4	3 2e+3				test
+t
+e
+s

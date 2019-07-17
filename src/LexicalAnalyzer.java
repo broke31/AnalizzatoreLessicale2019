@@ -22,6 +22,7 @@ public class LexicalAnalyzer {
   static boolean endOfFile = false;
   char character = ' ';
   String lessema = "";
+  String type = "";
 
   BufferedReader buffer;
 
@@ -67,9 +68,11 @@ public class LexicalAnalyzer {
             } else if (Character.isAlphabetic(character)) { //provo a vedere se è una un id/key
               lessema += character;
               state = 9;
+              type = "ID";
             } else if (Character.isDigit(character)) { //provo a vedere se è un numero
               lessema += character;
               state = 13;
+              type = "NUMBER";
             }
           }
           break;
@@ -140,7 +143,7 @@ public class LexicalAnalyzer {
         case 11:
           retrack();
           state = 0;
-          Token toReturn = installID("ID", lessema);
+          Token toReturn = installID(type, lessema);
           lessema = "";
           return toReturn;
         case 12:
@@ -218,7 +221,7 @@ public class LexicalAnalyzer {
         case 21:
           retrack();
           state = 0;
-          toReturn = installID("NUMBER", lessema);
+          toReturn = installID(type, lessema);
           lessema = "";
           return toReturn;
 
@@ -230,7 +233,7 @@ public class LexicalAnalyzer {
           } else {
             state = 0;
             retrack();
-            toReturn = installID("NUMBER", lessema);
+            toReturn = installID(type, lessema);
             lessema = "";
             return toReturn;
           }
