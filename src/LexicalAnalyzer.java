@@ -2,10 +2,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+
 /**
- * classe che implementa un analizzatore lessicale.
- * Class Lexical Analyzer
- * @author Giordano Giamaria
+ * classe che implementa un analizzatore lessicale. Class Lexical Analyzer
+ * 
+ * @author Giordano Giamaria Valeria Pontillo
  * @version 0.1
  */
 
@@ -13,13 +14,7 @@ public class LexicalAnalyzer {
   private static HashMap<String, Token> stringTable;
   int state;
   static int position;
-  String line = "";
-  static boolean eofFile = false;
   String app;
-
-  static int initial = 0;
-  static int end = 0;
-  static boolean endOfFile = false;
   char character = ' ';
   String lessema = "";
   String type = "";
@@ -27,11 +22,8 @@ public class LexicalAnalyzer {
   BufferedReader buffer;
 
   /**
-   * Costruttore del lexical Analyzer.
-   * Crea una HashMap e inserisce i token if, then ed else
-   * setta state = 0
-   * setta position = -1
-   * e la stringa che conterrà il file = vuoto
+   * Costruttore del lexical Analyzer. Crea una HashMap e inserisce i token if, then ed else setta
+   * state = 0 setta position = -1 e la stringa che conterrà il file = vuoto
    */
   public LexicalAnalyzer() throws IOException {
     state = 0;
@@ -42,11 +34,9 @@ public class LexicalAnalyzer {
     stringTable.put("else", new Token("ELSE"));
     app = "";
   }
-  
+
   /**
-   * nextToken.
-   * Analizza da un buffer carattere per carattere ed individua
-   * il token corrispondente
+   * nextToken. Analizza da un buffer carattere per carattere ed individua il token corrispondente
    *
    * @return Token che corrisponde al lessema letto.
    */
@@ -65,14 +55,21 @@ public class LexicalAnalyzer {
               state = 5;
             } else if (character == '>') {
               state = 6;
-            } else if (Character.isAlphabetic(character)) { //provo a vedere se è una un id/key
+            } else if (Character.isAlphabetic(character)) { // provo a vedere se è una un id/key
               lessema += character;
               state = 9;
               type = "ID";
-            } else if (Character.isDigit(character)) { //provo a vedere se è un numero
+            } else if (Character.isDigit(character)) { // provo a vedere se è un numero
               lessema += character;
               state = 13;
               type = "NUMBER";
+            }
+            else if (Character.isWhitespace(character)) {
+              state = 23;
+            }
+            else {
+              // stato pozzo
+              state = 99;
             }
           }
           break;
@@ -115,11 +112,11 @@ public class LexicalAnalyzer {
           state = 0;
           return new Token("relop", "GT");
         case 9:
-          //da 9 a 11 riconosco gli ID
+          // da 9 a 11 riconosco gli ID
           character = (char) nextCharacter();
           if (Character.isWhitespace(character)) {
             state = 11;
-          } else if (Character.isAlphabetic(character) || Character.isDigit(character)) {
+          } else if (Character.isLetterOrDigit(character)) {
             state = 10;
             lessema += character;
           } else {
@@ -250,25 +247,30 @@ public class LexicalAnalyzer {
           retrack();
           state = 0;
           break;
+        case 99: {
+          state = 0;
+          return new Token("Errore di sintassi");    
+        }
         default:
           break;
       }
     }
   }
+
   /**
-   * Inizializza il buffer.
-   * The long and detailed explanation what the method does.
+   * Inizializza il buffer. The long and detailed explanation what the method does.
+   * 
    * @param fp
    * @return true se è stato creato correttamente, false altrimenti.
    */
-  
+
   public Boolean initialize(String filePath) throws IOException {
     buffer = new BufferedReader(new FileReader(filePath));
     int test;
     while ((test = buffer.read()) != -1) {
-      /*if (test == -1) {
-        return false; // fine del file
-      }*/
+      /*
+       * if (test == -1) { return false; // fine del file }
+       */
       app += (char) test;
     }
     app += '\0';

@@ -1,7 +1,5 @@
-ciao
-<
->
-33.4	3 2e+3				test
+5
+.>.....ciao if then.><>
 t
 e
-s
+. 4e-4
